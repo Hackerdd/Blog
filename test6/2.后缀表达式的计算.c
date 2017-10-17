@@ -63,9 +63,6 @@ int GetTop (SeqStack *S,Elemtype *e){
 		return TRUE;
 	}
 } 
-SeqStack *result;//结果 
-SeqStack *sign;//符号
-SeqStack *num;//数字栈 
 int Priority(Elemtype e1){
 	switch(e1.string[0]){
 		case '+':
@@ -82,6 +79,10 @@ int Priority(Elemtype e1){
 			return 0;
 	}
 }
+SeqStack *num;//数字栈 
+SeqStack *sign;//符号 
+Elemtype result[50];//结果
+int result_top=0;
 int Convert(char str[]) {
 	Elemtype e1,e2,e3; //e1,表达式截取的数字。e2,表达式截取的符号(待入栈)。e3符号栈栈顶符号 
 	int i,j,count=0; //count计算数字的长度 
@@ -94,7 +95,8 @@ int Convert(char str[]) {
 		else{
 			if(count>0){ 
 				e1.string[count]=0;
-				Push(result,e1);//入栈数字
+				result[result_top]=e1;//数字存入结果数组中 
+				result_top++; 
 			}
 			
 			e2.string[0]=str[i];
@@ -109,7 +111,8 @@ int Convert(char str[]) {
 				//直到栈空，或着当前符号比栈顶元素优先级高，或者碰到'(' 
 				while(StackEmpty(sign)==0&&Priority(e2)<=Priority(e3)&&e3.string[0]!='('){  
 					Pop(sign,&e3);//出栈 
-					Push(result,e3);//入栈到结果栈中 
+					result[result_top]=e3;//存入结果数组中 
+					result_top++; 
 					GetTop(sign,&e3);//取出下一个栈顶元素 
 				}
 				if(e2.string[0]!=')'){//如果当前符号不是')',将符号入栈 
@@ -126,11 +129,18 @@ int Convert(char str[]) {
 	}
 	//结束时
 	e1.string[count]=0;
-	Push(result,e1);//入栈数字 
+	result[result_top]=e1;//存入结果数组中 
+	result_top++;  
 	while(!StackEmpty(sign)){
 		Pop(sign,&e3);
-		Push(result,e3);
+		result[result_top]=e3;//存入结果数组中 
+		result_top++;  
 	}
+	
+	for(i=0;i<result_top;i++){
+		printf("%s ",result[i].string);
+	}
+	printf("\n");
 }
 int strnum(Elemtype e1){
 	int sum=0,i;
@@ -159,13 +169,14 @@ void Calculate(){
 	int sum;
 	Elemtype e1,e2;
 	int i;
-	for(i=0;i<result->top+1;i++){ //是数字就入栈 
-		if(result->data[i].string[0]>='0'&&result->data[i].string[0]<='9'){
-			Push(num,result->data[i]);
+	for(i=0;i<result_top+1;i++){ //是数字就入栈 
+	
+		if(result[i].string[0]>='0'&&result[i].string[0]<='9'){
+			Push(num,result[i]);
 		}else{  //是符号就出栈两个栈顶元素并运算 ,然后出栈 
 			Pop(num,&e1);
 			Pop(num,&e2);
-			switch(result->data[i].string[0]){
+			switch(result[i].string[0]){
 				case '+':
 					sum = strnum(e2) + strnum(e1);
 					break;
@@ -183,15 +194,15 @@ void Calculate(){
 			Push(num,e1);	
 		}
 	}
-	printf("%s",num->data[0].string);
+	printf("%s\n",num->data[0].string);
 }
 int main(void){
-	result=InitStack();//创建栈
-	sign=InitStack(); 
+	sign=InitStack();//创建栈 
 	num=InitStack();
 	
-	char str[100];
-	scanf("%s",str); 
+	char str[100]="9+(3-1)*4+10/2";
+	//char str[100];
+	//scanf("%s",str); 
 	Convert(str);
 	Calculate(result); 
 }
