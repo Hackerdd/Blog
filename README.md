@@ -7,3 +7,4 @@
 * test6:[数据结构学习笔记6————栈的应用3-后缀表达式 ](http://blog.csdn.net/qq_38499859/article/details/78257836)
 * test7:[数据结构学习笔记7————串-从c语言String库源码来学习 ](http://blog.csdn.net/qq_38499859/article/details/78289568)
 * test8:[数据结构学习笔记8————串的BF匹配模式和KMP匹配模式 ](http://blog.csdn.net/qq_38499859/article/details/78311159)
+* test9:[ c语言小项目————2048 ](http://blog.csdn.net/qq_38499859/article/details/72859112#comments)
